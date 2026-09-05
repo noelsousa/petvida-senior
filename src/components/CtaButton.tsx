@@ -7,6 +7,7 @@ type Props = {
   variant?: "gold" | "petrol";
   size?: "md" | "lg";
   ariaLabel?: string;
+  onCheckout?: () => void;
 };
 
 export function CtaButton({
@@ -15,15 +16,19 @@ export function CtaButton({
   variant = "gold",
   size = "lg",
   ariaLabel,
+  onCheckout,
 }: Props) {
   return (
     <a
       href={CHECKOUT_URL}
-      onClick={goToCheckout}
+      onClick={(event) => {
+        onCheckout?.();
+        goToCheckout(event);
+      }}
       aria-label={ariaLabel}
       rel="noopener"
       className={cn(
-        "inline-flex w-full items-center justify-center rounded-full px-6 text-center font-extrabold tracking-wide uppercase transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0",
+        "inline-flex w-full items-center justify-center rounded-xl px-5 text-center font-extrabold uppercase transition-[transform,filter] duration-200 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0",
         size === "lg"
           ? "min-h-[60px] py-4 text-[1.0625rem] leading-tight"
           : "min-h-[52px] py-3 text-[0.9375rem] leading-tight",
