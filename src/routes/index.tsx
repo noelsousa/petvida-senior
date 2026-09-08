@@ -528,4 +528,4 @@ function ChecklistIcon() { return <SvgIcon><rect x="5" y="3" width="14" height="
 function BookIcon() { return <SvgIcon><path d="M4 5a3 3 0 0 1 3-2h5v17H7a3 3 0 0 0-3 2V5Z"/><path d="M20 5a3 3 0 0 0-3-2h-5v17h5a3 3 0 0 1 3 2V5Z"/></SvgIcon>; }
 function MessageIcon() { return <SvgIcon><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></SvgIcon>; }
 function LockIcon() { return <SvgIcon><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></SvgIcon>; }
-function ShieldIcon({ className }: { className?: string }) { return <SvgIcon className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></SvgIcon>; }
+function ShieldIcon({ className = "size-5" }: { className?: string }) { return <SvgIcon className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></SvgIcon>; }
