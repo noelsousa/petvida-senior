@@ -517,7 +517,7 @@ function TrustLine({ dark = false }: { dark?: boolean }) {
 function SvgIcon({ children, className = "size-5" }: { children: ReactNode; className?: string }) {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className={className}>{children}</svg>;
 }
-function CheckCircleIcon({ className }: { className?: string }) { return <SvgIcon className={className}><circle cx="12" cy="12" r="9" /><path d="m8 12 2.6 2.6L16.5 9" /></SvgIcon>; }
+function CheckCircleIcon({ className = "size-5" }: { className?: string }) { return <SvgIcon className={className}><circle cx="12" cy="12" r="9" /><path d="m8 12 2.6 2.6L16.5 9" /></SvgIcon>; }
 function PawIcon({ className = "size-5" }: { className?: string }) { return <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}><ellipse cx="6" cy="9" rx="2.1" ry="2.9"/><ellipse cx="10.6" cy="6" rx="2.1" ry="2.9"/><ellipse cx="15.5" cy="6.4" rx="2.1" ry="2.9"/><ellipse cx="19.4" cy="10" rx="2" ry="2.7"/><path d="M12.6 11.4c3.2 0 5.9 2.4 5.9 5.1 0 2.1-1.7 3.5-4 3.5-1 0-1.6-.2-2.2-.4-.5-.2-.9-.2-1.4 0-.6.2-1.2.4-2.2.4-2.3 0-4-1.4-4-3.5 0-2.7 2.7-5.1 5.9-5.1z"/></svg>; }
 function BowlIcon() { return <SvgIcon><path d="M3 11h18a9 9 0 0 1-18 0Z"/><path d="M8 7c0-1.7 1.8-3 4-3s4 1.3 4 3"/></SvgIcon>; }
 function CalendarIcon() { return <SvgIcon><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></SvgIcon>; }
