@@ -509,6 +509,8 @@ function LandingPage() {
 
       <div
         aria-hidden={!showStickyBar}
+        {...(!showStickyBar ? { inert: true } : {})}
+
         className={`fixed inset-x-0 bottom-0 z-40 border-t border-gold/40 bg-primary-dark/95 px-3 py-3 backdrop-blur transition-[opacity,transform] duration-300 md:hidden ${showStickyBar ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0"}`}
       >
         <CtaButton size="md" ariaLabel="Comprar o PetVida Sênior por R$ 29,90">Comprar por R$ 29,90</CtaButton>
