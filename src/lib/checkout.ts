@@ -54,7 +54,11 @@ export function goToCheckout(event?: { preventDefault: () => void }): void {
   if (redirecting) return;
   redirecting = true;
 
+  // garante que o pixel esteja carregado antes de sair da página
+  (window as unknown as { __fbLoad?: () => void }).__fbLoad?.();
+
   const url = buildCheckoutUrl();
+
 
   try {
     getFbq()?.("track", "InitiateCheckout", {

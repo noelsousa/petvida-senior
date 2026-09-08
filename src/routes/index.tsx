@@ -16,6 +16,8 @@ import bonus1 from "@/assets/bonus-1.webp";
 import bonus2 from "@/assets/bonus-2.webp";
 import bonus3 from "@/assets/bonus-3.webp";
 
+const SITE_URL = "https://petvida-senior.lovable.app";
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 const TITLE = "PetVida Sênior — Guia para Cães e Gatos Idosos";
 const DESCRIPTION =
   "Guia completo + 3 bônus para cuidar melhor do seu cão ou gato idoso. Oferta de lançamento por R$ 29,90, com acesso imediato e garantia de 7 dias.";
@@ -29,10 +31,19 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: TITLE },
       { property: "og:description", content: DESCRIPTION },
       { property: "og:type", content: "product" },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: `${SITE_URL}/` },
+      { property: "og:image", content: OG_IMAGE },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: TITLE },
+      { name: "twitter:description", content: DESCRIPTION },
+      { name: "twitter:image", content: OG_IMAGE },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [
+      { rel: "canonical", href: `${SITE_URL}/` },
+      { rel: "preload", as: "image", href: heroPets, fetchPriority: "high" },
+    ],
     scripts: [
       {
         type: "application/ld+json",
@@ -41,6 +52,7 @@ export const Route = createFileRoute("/")({
           "@type": "Product",
           name: "PetVida Sênior — Guia Completo + 3 Bônus",
           description: DESCRIPTION,
+          image: OG_IMAGE,
           brand: { "@type": "Brand", name: "PetVida Sênior" },
           offers: {
             "@type": "Offer",
@@ -54,6 +66,7 @@ export const Route = createFileRoute("/")({
     ],
   }),
 });
+
 
 const heroBenefits = [
   "Cuidados diários para pets idosos",
@@ -167,19 +180,27 @@ function LandingPage() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => {
+    let frame = 0;
+    const evaluate = () => {
+      frame = 0;
       const rect = offerRef.current?.getBoundingClientRect();
       const offerVisible = !!rect && rect.top < window.innerHeight && rect.bottom > 0;
       setShowStickyBar(window.scrollY > 560 && !offerVisible);
     };
-    onScroll();
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(evaluate);
+    };
+    evaluate();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
     return () => {
+      if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
   }, []);
+
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background">
@@ -488,6 +509,8 @@ function LandingPage() {
 
       <div
         aria-hidden={!showStickyBar}
+        {...(!showStickyBar ? { inert: true } : {})}
+
         className={`fixed inset-x-0 bottom-0 z-40 border-t border-gold/40 bg-primary-dark/95 px-3 py-3 backdrop-blur transition-[opacity,transform] duration-300 md:hidden ${showStickyBar ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0"}`}
       >
         <CtaButton size="md" ariaLabel="Comprar o PetVida Sênior por R$ 29,90">Comprar por R$ 29,90</CtaButton>
