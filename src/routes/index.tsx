@@ -180,19 +180,27 @@ function LandingPage() {
   }, []);
 
   useEffect(() => {
-    const onScroll = () => {
+    let frame = 0;
+    const evaluate = () => {
+      frame = 0;
       const rect = offerRef.current?.getBoundingClientRect();
       const offerVisible = !!rect && rect.top < window.innerHeight && rect.bottom > 0;
       setShowStickyBar(window.scrollY > 560 && !offerVisible);
     };
-    onScroll();
+    const onScroll = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(evaluate);
+    };
+    evaluate();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
+    window.addEventListener("resize", onScroll, { passive: true });
     return () => {
+      if (frame) window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };
   }, []);
+
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background">
