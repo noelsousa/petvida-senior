@@ -1,16 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { CtaButton } from "@/components/CtaButton";
 import { trackViewContent } from "@/lib/checkout";
-import logo from "@/assets/logo.webp";
+import logo from "@/assets/logo-288.webp";
 import heroPets from "@/assets/hero-pets.webp";
 import mockupMain from "@/assets/mockup-main.webp";
+import mockupSmall from "@/assets/mockup-main-480.webp";
 import tutorPet from "@/assets/tutor-pet.webp";
 import bonus1 from "@/assets/bonus-1.webp";
 import bonus2 from "@/assets/bonus-2.webp";
