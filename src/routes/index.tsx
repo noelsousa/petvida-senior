@@ -347,7 +347,7 @@ function LandingPage() {
             <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {products.map((product) => (
                 <article key={product.title} className={`flex flex-col rounded-2xl border bg-background p-4 shadow-[var(--shadow-card)] ${product.featured ? "border-gold md:col-span-2 lg:col-span-1" : "border-border"}`}>
-                  <div className="grid h-48 place-items-center rounded-xl bg-muted p-2">
+                  <div className="flex h-48 items-center justify-center overflow-hidden rounded-xl bg-muted p-2">
                     <img
                       src={product.image}
                       alt={product.alt}
@@ -355,7 +355,7 @@ function LandingPage() {
                       height={product.featured ? 720 : 560}
                       loading="lazy"
                       decoding="async"
-                      className="h-full w-full object-contain"
+                      className="max-h-full w-auto max-w-full object-contain"
                     />
                   </div>
                   <p className="eyebrow mt-4 text-primary">{product.label}</p>
