@@ -182,6 +182,7 @@ function LandingPage() {
               <PlanCard
                 title="Plano Básico"
                 label="Essencial"
+                price="R$ 10,00"
                 description="Para quem quer somente o e-book principal PetVida Sênior."
                 features={["E-book principal PetVida Sênior", "Acesso digital", "Acesso imediato", "Pagamento único"]}
                 buttonLabel="Quero o Básico"
@@ -191,6 +192,7 @@ function LandingPage() {
               <PlanCard
                 title="Plano Premium"
                 label="Mais completo"
+                price="R$ 29,90"
                 description="Para quem quer o guia principal junto dos três materiais extras."
                 features={["E-book principal PetVida Sênior", "Checklist Mensal do Pet Idoso", "Guia de Alimentação Sênior", "Rotina de Cuidados e Conforto", "Acesso imediato", "Garantia conforme checkout"]}
                 buttonLabel="Quero o Premium"
@@ -289,7 +291,7 @@ function LandingPage() {
   );
 }
 
-function PlanCard({ title, label, description, features, buttonLabel, href, featured = false }: { title: string; label: string; description: string; features: string[]; buttonLabel: string; href: string; featured?: boolean }) {
+function PlanCard({ title, label, price, description, features, buttonLabel, href, featured = false }: { title: string; label: string; price: string; description: string; features: string[]; buttonLabel: string; href: string; featured?: boolean }) {
   const handlePremiumClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     if (href === CHECKOUT_URL) goToCheckout(event);
   };
@@ -299,7 +301,8 @@ function PlanCard({ title, label, description, features, buttonLabel, href, feat
       {featured && <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold px-4 py-1 text-xs font-extrabold uppercase text-primary-dark">Recomendado</div>}
       <p className="eyebrow text-primary">{label}</p>
       <h2 className="mt-2 text-2xl text-primary sm:text-3xl">{title}</h2>
-      <p className="mt-3 min-h-12 text-base leading-relaxed text-foreground">{description}</p>
+      <p className="mt-3 text-3xl font-black tracking-tight text-primary sm:text-4xl">{price}</p>
+      <p className="mt-2 min-h-12 text-base leading-relaxed text-foreground">{description}</p>
       <ul className="mt-5 space-y-2.5">
         {features.map((feature) => <li key={feature} className="flex items-start gap-2 text-sm font-semibold text-foreground"><CheckCircleIcon className="mt-0.5 size-5 shrink-0 text-primary" /><span>{feature}</span></li>)}
       </ul>
