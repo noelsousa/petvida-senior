@@ -1,4 +1,3 @@
-import { CHECKOUT_URL, goToCheckout } from "@/lib/checkout";
 import { cn } from "@/lib/utils";
 
 type Props = {
@@ -7,7 +6,7 @@ type Props = {
   variant?: "gold" | "petrol";
   size?: "md" | "lg";
   ariaLabel?: string;
-  onCheckout?: () => void;
+  targetId?: string;
 };
 
 export function CtaButton({
@@ -16,17 +15,21 @@ export function CtaButton({
   variant = "gold",
   size = "lg",
   ariaLabel,
-  onCheckout,
+  targetId = "oferta",
 }: Props) {
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!targetId) return;
+    const target = document.getElementById(targetId);
+    if (!target) return;
+    event.preventDefault();
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <a
-      href={CHECKOUT_URL}
-      onClick={(event) => {
-        onCheckout?.();
-        goToCheckout(event);
-      }}
+      href={targetId ? `#${targetId}` : "#"}
+      onClick={handleClick}
       aria-label={ariaLabel}
-      rel="noopener"
       className={cn(
         "inline-flex w-full items-center justify-center rounded-xl px-5 text-center font-extrabold uppercase transition-[transform,filter] duration-200 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0",
         size === "lg"
