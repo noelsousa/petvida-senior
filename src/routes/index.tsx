@@ -465,14 +465,28 @@ function LandingPage() {
         <section className="section-pad bg-card">
           <div className="wrap max-w-3xl">
             <SectionHeading title="Perguntas frequentes" />
-            <Accordion type="single" collapsible className="mt-7 space-y-3">
-              {faq.map((item, index) => (
-                <AccordionItem key={item.q} value={`faq-${index}`} className="rounded-xl border border-border bg-background px-4">
-                  <AccordionTrigger className="text-left text-base font-bold text-primary hover:no-underline">{item.q}</AccordionTrigger>
-                  <AccordionContent className="text-base leading-relaxed text-foreground">{item.a}</AccordionContent>
-                </AccordionItem>
+            <div className="mt-7 space-y-3">
+              {faq.map((item) => (
+                <details key={item.q} className="group rounded-xl border border-border bg-background px-4">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-4 text-left text-base font-bold text-primary [&::-webkit-details-marker]:hidden">
+                    {item.q}
+                    <svg
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      className="size-4 shrink-0 text-primary transition-transform duration-200 group-open:rotate-180"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </summary>
+                  <div className="pb-4 text-base leading-relaxed text-foreground">{item.a}</div>
+                </details>
               ))}
-            </Accordion>
+            </div>
           </div>
         </section>
 
