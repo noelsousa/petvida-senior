@@ -19,7 +19,6 @@ export function buildCheckoutUrl(): string {
 
   for (const key of TRACKED_PARAMS) {
     const value = current.get(key);
-    // não duplica parâmetros já presentes no checkout
     if (value && !target.searchParams.has(key)) {
       target.searchParams.set(key, value);
     }
@@ -48,17 +47,13 @@ export function trackViewContent(): void {
 
 let redirecting = false;
 
-/** Único handler para todos os CTAs: InitiateCheckout -> redireciona. */
+/** Único handler para CTAs do Premium: registra InitiateCheckout e sai rapidamente para o checkout. */
 export function goToCheckout(event?: { preventDefault: () => void }): void {
   event?.preventDefault();
   if (redirecting) return;
   redirecting = true;
 
-  // garante que o pixel esteja carregado antes de sair da página
-  (window as unknown as { __fbLoad?: () => void }).__fbLoad?.();
-
   const url = buildCheckoutUrl();
-
 
   try {
     getFbq()?.("track", "InitiateCheckout", {
@@ -73,11 +68,9 @@ export function goToCheckout(event?: { preventDefault: () => void }): void {
     // pixel bloqueado: o botão continua funcionando
   }
 
+  // Não segura o usuário por centenas de ms esperando o pixel.
+  // O navegador recebe tempo suficiente para enfileirar o evento e redireciona.
   window.setTimeout(() => {
-    window.location.href = url;
-    // libera caso o navegador mantenha a página (ex.: volta do histórico)
-    window.setTimeout(() => {
-      redirecting = false;
-    }, 4000);
-  }, 250);
+    window.location.replace(url);
+  }, 60);
 }
