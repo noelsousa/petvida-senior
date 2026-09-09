@@ -1,16 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { CtaButton } from "@/components/CtaButton";
 import { trackViewContent } from "@/lib/checkout";
-import logo from "@/assets/logo.webp";
+import logo from "@/assets/logo-288.webp";
 import heroPets from "@/assets/hero-pets.webp";
 import mockupMain from "@/assets/mockup-main.webp";
+import mockupSmall from "@/assets/mockup-main-480.webp";
 import tutorPet from "@/assets/tutor-pet.webp";
 import bonus1 from "@/assets/bonus-1.webp";
 import bonus2 from "@/assets/bonus-2.webp";
@@ -172,6 +167,7 @@ const faq = [
 ];
 
 function LandingPage() {
+  const heroRef = useRef<HTMLElement | null>(null);
   const offerRef = useRef<HTMLElement | null>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
 
@@ -179,26 +175,27 @@ function LandingPage() {
     trackViewContent();
   }, []);
 
+  // IntersectionObserver em vez de listeners de scroll: nenhum trabalho por quadro
   useEffect(() => {
-    let frame = 0;
-    const evaluate = () => {
-      frame = 0;
-      const rect = offerRef.current?.getBoundingClientRect();
-      const offerVisible = !!rect && rect.top < window.innerHeight && rect.bottom > 0;
-      setShowStickyBar(window.scrollY > 560 && !offerVisible);
-    };
-    const onScroll = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(evaluate);
-    };
-    evaluate();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
+    const hero = heroRef.current;
+    const offer = offerRef.current;
+    if (!hero || !offer) return;
+
+    const visible = new WeakMap<Element, boolean>([
+      [hero, true],
+      [offer, false],
+    ]);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) visible.set(entry.target, entry.isIntersecting);
+        setShowStickyBar(!visible.get(hero) && !visible.get(offer));
+      },
+      { threshold: 0 },
+    );
+    observer.observe(hero);
+    observer.observe(offer);
+    return () => observer.disconnect();
   }, []);
 
 
@@ -470,14 +467,28 @@ function LandingPage() {
         <section className="section-pad bg-card">
           <div className="wrap max-w-3xl">
             <SectionHeading title="Perguntas frequentes" />
-            <Accordion type="single" collapsible className="mt-7 space-y-3">
-              {faq.map((item, index) => (
-                <AccordionItem key={item.q} value={`faq-${index}`} className="rounded-xl border border-border bg-background px-4">
-                  <AccordionTrigger className="text-left text-base font-bold text-primary hover:no-underline">{item.q}</AccordionTrigger>
-                  <AccordionContent className="text-base leading-relaxed text-foreground">{item.a}</AccordionContent>
-                </AccordionItem>
+            <div className="mt-7 space-y-3">
+              {faq.map((item) => (
+                <details key={item.q} className="group rounded-xl border border-border bg-background px-4">
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-4 text-left text-base font-bold text-primary [&::-webkit-details-marker]:hidden">
+                    {item.q}
+                    <svg
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                      className="size-4 shrink-0 text-primary transition-transform duration-200 group-open:rotate-180"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="m6 9 6 6 6-6" />
+                    </svg>
+                  </summary>
+                  <div className="pb-4 text-base leading-relaxed text-foreground">{item.a}</div>
+                </details>
               ))}
-            </Accordion>
+            </div>
           </div>
         </section>
 
