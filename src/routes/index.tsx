@@ -167,6 +167,7 @@ const faq = [
 ];
 
 function LandingPage() {
+  const heroRef = useRef<HTMLElement | null>(null);
   const offerRef = useRef<HTMLElement | null>(null);
   const [showStickyBar, setShowStickyBar] = useState(false);
 
@@ -174,26 +175,27 @@ function LandingPage() {
     trackViewContent();
   }, []);
 
+  // IntersectionObserver em vez de listeners de scroll: nenhum trabalho por quadro
   useEffect(() => {
-    let frame = 0;
-    const evaluate = () => {
-      frame = 0;
-      const rect = offerRef.current?.getBoundingClientRect();
-      const offerVisible = !!rect && rect.top < window.innerHeight && rect.bottom > 0;
-      setShowStickyBar(window.scrollY > 560 && !offerVisible);
-    };
-    const onScroll = () => {
-      if (frame) return;
-      frame = window.requestAnimationFrame(evaluate);
-    };
-    evaluate();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-    };
+    const hero = heroRef.current;
+    const offer = offerRef.current;
+    if (!hero || !offer) return;
+
+    const visible = new WeakMap<Element, boolean>([
+      [hero, true],
+      [offer, false],
+    ]);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) visible.set(entry.target, entry.isIntersecting);
+        setShowStickyBar(!visible.get(hero) && !visible.get(offer));
+      },
+      { threshold: 0 },
+    );
+    observer.observe(hero);
+    observer.observe(offer);
+    return () => observer.disconnect();
   }, []);
 
 
