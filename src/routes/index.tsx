@@ -1,21 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { CtaButton } from "@/components/CtaButton";
-import { trackViewContent } from "@/lib/checkout";
+import { CHECKOUT_URL, goToCheckout, trackViewContent } from "@/lib/checkout";
 import logo from "@/assets/logo-288.webp";
 import heroPets from "@/assets/hero-pets.webp";
 import mockupMain from "@/assets/mockup-main.webp";
-import mockupSmall from "@/assets/mockup-main-480.webp";
-import tutorPet from "@/assets/tutor-pet.webp";
 import bonus1 from "@/assets/bonus-1.webp";
 import bonus2 from "@/assets/bonus-2.webp";
 import bonus3 from "@/assets/bonus-3.webp";
 
 const SITE_URL = "https://petvida-senior.lovable.app";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+const BASIC_CHECKOUT_URL = "https://pay.kiwify.com.br/cbbtkJu";
 const TITLE = "PetVida Sênior — Guia para Cães e Gatos Idosos";
-const DESCRIPTION =
-  "Guia completo + 3 bônus para cuidar melhor do seu cão ou gato idoso. Oferta de lançamento por R$ 29,90, com acesso imediato e garantia de 7 dias.";
+const DESCRIPTION = "Escolha entre o e-book principal ou o pacote completo PetVida Sênior com 3 bônus.";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
@@ -28,8 +26,6 @@ export const Route = createFileRoute("/")({
       { property: "og:type", content: "product" },
       { property: "og:url", content: `${SITE_URL}/` },
       { property: "og:image", content: OG_IMAGE },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: TITLE },
       { name: "twitter:description", content: DESCRIPTION },
@@ -45,7 +41,7 @@ export const Route = createFileRoute("/")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Product",
-          name: "PetVida Sênior — Guia Completo + 3 Bônus",
+          name: "PetVida Sênior",
           description: DESCRIPTION,
           image: OG_IMAGE,
           brand: { "@type": "Brand", name: "PetVida Sênior" },
@@ -54,7 +50,7 @@ export const Route = createFileRoute("/")({
             price: "29.90",
             priceCurrency: "BRL",
             availability: "https://schema.org/InStock",
-            url: "https://pay.kiwify.com.br/qu6aO4q",
+            url: CHECKOUT_URL,
           },
         }),
       },
@@ -62,159 +58,67 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-
 const heroBenefits = [
   "Cuidados diários para pets idosos",
   "Alimentação, higiene e rotina",
   "Consultas, medicamentos e sinais de alerta",
-  "Guia completo + 3 bônus",
+  "Acesso imediato ao material digital",
 ];
 
 const painPoints = [
   "Ele dorme mais do que antes?",
   "Está comendo menos ou diferente?",
   "Tem dificuldade para levantar, andar ou subir?",
-  "O pelo, a pele ou o hálito mudaram?",
   "Você fica na dúvida se é idade ou sinal de alerta?",
 ];
 
-const transformations = [
-  { title: "Higiene adaptada", icon: BathIcon },
-  { title: "Alimentação e apetite", icon: BowlIcon },
-  { title: "Consultas organizadas", icon: CalendarIcon },
-  { title: "Controle de medicamentos", icon: MedicineIcon },
-  { title: "Checklist mensal", icon: ChecklistIcon },
-  { title: "Sinais de atenção", icon: EyeIcon },
-];
-
-const products = [
-  {
-    label: "Guia principal",
-    title: "PetVida Sênior",
-    text: "Cuidados com higiene, alimentação, rotina, consultas, medicamentos e sinais de alerta.",
-    image: mockupMain,
-    alt: "Mockup do guia principal PetVida Sênior",
-    featured: true,
-  },
-  {
-    label: "Bônus 1",
-    title: "Checklist Mensal do Pet Idoso",
-    text: "Acompanhe alimentação, comportamento, mobilidade, higiene e mudanças importantes.",
-    image: bonus1,
-    alt: "Capa do bônus Checklist Mensal do Pet Idoso",
-  },
-  {
-    label: "Bônus 2",
-    title: "Guia de Alimentação Sênior",
-    text: "Entenda os cuidados alimentares e converse com o veterinário com mais segurança.",
-    image: bonus2,
-    alt: "Capa do bônus Guia de Alimentação Sênior",
-  },
-  {
-    label: "Bônus 3",
-    title: "Rotina de Cuidados e Conforto",
-    text: "Um plano prático para deixar o dia a dia mais confortável, seguro e organizado.",
-    image: bonus3,
-    alt: "Capa do bônus Rotina de Cuidados e Conforto",
-  },
-];
-
-const offerItems = [
-  "Pagamento único",
-  "Acesso imediato",
-  "Acesso pelo celular",
-  "Guia principal + 3 bônus",
-  "Garantia de 7 dias",
-];
-
-const safetyItems = [
-  { title: "Conteúdo educativo", icon: BookIcon },
-  { title: "Linguagem simples", icon: MessageIcon },
-  { title: "Foco em pets idosos", icon: PawIcon },
-  { title: "Compra segura", icon: LockIcon },
-  { title: "Garantia de 7 dias", icon: ShieldIcon },
-];
-
-const audience = [
-  "Você tem medo de não perceber mudanças importantes no seu pet",
-  "Fica em dúvida sobre alimentação, higiene ou rotina",
-  "Seu pet já não tem a mesma energia de antes",
-  "Quer organizar consultas e medicamentos",
-  "Quer cuidar melhor sem se sentir perdido",
-];
-
 const faq = [
+  { q: "O guia serve para cães e gatos?", a: "Sim. O conteúdo foi criado para tutores de cães e gatos idosos." },
+  { q: "É uma consulta veterinária?", a: "Não. É um material educativo. Em caso de sintomas ou sinais preocupantes, procure um médico-veterinário." },
+  { q: "Como recebo o acesso?", a: "Após a compra, o acesso é enviado automaticamente pela Kiwify para o e-mail cadastrado." },
+  { q: "É pagamento único?", a: "Sim. Você paga uma vez e recebe o acesso ao produto escolhido." },
+  { q: "Tem garantia?", a: "O checkout informa as condições de garantia aplicáveis a cada oferta." },
+];
+
+const productComments = [
   {
-    q: "O guia serve para cães e gatos?",
-    a: "Sim. O conteúdo foi criado para tutores de cães e gatos idosos.",
+    title: "Direto ao ponto",
+    text: "O material foi organizado para quem quer saber o que observar na rotina do pet idoso sem precisar atravessar uma página cheia de informações desnecessárias.",
   },
   {
-    q: "É uma consulta veterinária?",
-    a: "Não. É um guia educativo. Em caso de sintomas, dor, mudança brusca de comportamento ou qualquer sinal preocupante, procure um médico-veterinário.",
+    title: "Para usar no dia a dia",
+    text: "A proposta é transformar cuidados importantes — alimentação, higiene, rotina, consultas e sinais de atenção — em algo mais fácil de acompanhar.",
   },
   {
-    q: "Como recebo o acesso?",
-    a: "Após a compra, o acesso é enviado automaticamente pela Kiwify para o e-mail cadastrado.",
+    title: "Mais clareza",
+    text: "Em vez de tentar lembrar tudo de cabeça, o tutor pode usar o conteúdo como uma referência prática para organizar os cuidados.",
   },
   {
-    q: "É pagamento único?",
-    a: "Sim. Você paga uma vez e recebe o acesso ao conteúdo digital.",
-  },
-  {
-    q: "Tem garantia?",
-    a: "Sim. Você tem 7 dias de garantia, conforme as condições apresentadas no checkout.",
+    title: "Escolha simples",
+    text: "Quem quer somente o e-book pode escolher o Básico. Quem quer o pacote completo pode levar também os três bônus.",
   },
 ];
 
 function LandingPage() {
-  const heroRef = useRef<HTMLElement | null>(null);
-  const offerRef = useRef<HTMLElement | null>(null);
-  const [showStickyBar, setShowStickyBar] = useState(false);
+  const [commentIndex, setCommentIndex] = useState(0);
 
   useEffect(() => {
     trackViewContent();
   }, []);
 
-  // IntersectionObserver em vez de listeners de scroll: nenhum trabalho por quadro
-  useEffect(() => {
-    const hero = heroRef.current;
-    const offer = offerRef.current;
-    if (!hero || !offer) return;
-
-    const visible = new WeakMap<Element, boolean>([
-      [hero, true],
-      [offer, false],
-    ]);
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) visible.set(entry.target, entry.isIntersecting);
-        setShowStickyBar(!visible.get(hero) && !visible.get(offer));
-      },
-      { threshold: 0 },
-    );
-    observer.observe(hero);
-    observer.observe(offer);
-    return () => observer.disconnect();
-  }, []);
-
+  const nextComment = () => setCommentIndex((current) => (current + 1) % productComments.length);
+  const previousComment = () => setCommentIndex((current) => (current - 1 + productComments.length) % productComments.length);
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-background">
       <div className="bg-primary-dark px-3 py-2 text-center text-xs font-extrabold uppercase text-cream">
-        Guia completo + 3 bônus <span className="text-gold">•</span> Acesso imediato
+        PetVida Sênior <span className="text-gold">•</span> Acesso imediato
       </div>
 
       <main>
         <section className="relative overflow-hidden bg-background pb-12 pt-5 sm:pb-16 lg:pb-20 lg:pt-8">
           <div className="wrap">
-            <img
-              src={logo}
-              alt="PetVida Sênior"
-              width={576}
-              height={288}
-              className="mx-auto h-12 w-auto lg:mx-0 lg:h-14"
-            />
+            <img src={logo} alt="PetVida Sênior" width={576} height={288} className="mx-auto h-12 w-auto lg:mx-0 lg:h-14" />
 
             <div className="mt-5 grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)] lg:gap-12">
               <div className="min-w-0 lg:order-1">
@@ -223,28 +127,12 @@ function LandingPage() {
                   Seu pet envelheceu. <span className="text-gold">O cuidado também precisa evoluir.</span>
                 </h1>
                 <p className="mx-auto mt-4 max-w-xl text-center text-base leading-relaxed text-foreground lg:mx-0 lg:text-left lg:text-lg">
-                  Um guia simples e completo para cuidar melhor da alimentação, higiene, consultas,
-                  medicamentos, rotina e sinais de alerta.
+                  Um guia simples para ajudar você a cuidar melhor da alimentação, higiene, rotina e sinais de atenção do seu pet idoso.
                 </p>
 
                 <div className="relative mt-6 lg:hidden">
-                  <img
-                    src={heroPets}
-                    alt="Cão idoso e gato idoso descansando juntos"
-                    width={960}
-                    height={720}
-                    fetchPriority="high"
-                    decoding="async"
-                    className="aspect-[16/11] w-full rounded-2xl object-cover object-center shadow-[var(--shadow-soft)]"
-                  />
-                  <img
-                    src={mockupMain}
-                    alt="Guia digital PetVida Sênior"
-                    width={900}
-                    height={720}
-                    decoding="async"
-                    className="absolute -bottom-5 -right-5 w-[43%] max-w-44 drop-shadow-xl"
-                  />
+                  <img src={heroPets} alt="Cão idoso e gato idoso descansando juntos" width={960} height={720} fetchPriority="high" decoding="async" className="aspect-[16/11] w-full rounded-2xl object-cover object-center shadow-[var(--shadow-soft)]" />
+                  <img src={mockupMain} alt="Guia digital PetVida Sênior" width={900} height={720} decoding="async" className="absolute -bottom-5 -right-5 w-[43%] max-w-44 drop-shadow-xl" />
                 </div>
 
                 <ul className="mt-8 grid gap-2.5 sm:grid-cols-2 lg:mt-6">
@@ -257,34 +145,15 @@ function LandingPage() {
                 </ul>
 
                 <div className="mt-6 max-w-xl">
-                  <div className="flex items-end justify-center gap-2 lg:justify-start">
-                    <span className="pb-1 text-sm text-muted-foreground line-through">R$ 69,90</span>
-                    <span className="font-display text-3xl font-bold text-primary">R$ 29,90</span>
-                    <span className="pb-1 text-sm font-bold text-primary">pagamento único</span>
-                  </div>
-                  <CtaButton className="mt-3">Quero cuidar melhor do meu pet</CtaButton>
+                  <p className="text-center text-sm font-semibold text-muted-foreground lg:text-left">Escolha o formato que faz mais sentido para você:</p>
+                  <CtaButton className="mt-3">Ver os planos</CtaButton>
                   <TrustLine />
                 </div>
               </div>
 
               <div className="relative hidden lg:order-2 lg:block">
-                <img
-                  src={heroPets}
-                  alt="Cão idoso e gato idoso descansando juntos"
-                  width={960}
-                  height={720}
-                  fetchPriority="high"
-                  decoding="async"
-                  className="aspect-[4/3] w-full rounded-2xl object-cover shadow-[var(--shadow-soft)]"
-                />
-                <img
-                  src={mockupMain}
-                  alt="Guia digital PetVida Sênior"
-                  width={900}
-                  height={720}
-                  decoding="async"
-                  className="absolute -bottom-12 -left-14 w-[47%] drop-shadow-2xl"
-                />
+                <img src={heroPets} alt="Cão idoso e gato idoso descansando juntos" width={960} height={720} fetchPriority="high" decoding="async" className="aspect-[4/3] w-full rounded-2xl object-cover shadow-[var(--shadow-soft)]" />
+                <img src={mockupMain} alt="Guia digital PetVida Sênior" width={900} height={720} decoding="async" className="absolute -bottom-12 -left-14 w-[47%] drop-shadow-2xl" />
               </div>
             </div>
           </div>
@@ -292,198 +161,99 @@ function LandingPage() {
 
         <section className="section-pad bg-card">
           <div className="wrap max-w-4xl">
-            <SectionHeading
-              eyebrow="Observe com mais atenção"
-              title="Com a idade, pequenos sinais podem dizer muito."
-              text="Muitas mudanças parecem apenas “coisa da idade”, mas algumas merecem atenção e acompanhamento."
-            />
+            <SectionHeading eyebrow="Observe com mais atenção" title="Com a idade, pequenos sinais podem dizer muito." text="Algumas mudanças parecem apenas coisa da idade. Ter uma referência ajuda você a observar a rotina com mais atenção." />
             <ul className="mt-7 grid gap-3 sm:grid-cols-2">
-              {painPoints.map((item, index) => (
-                <li
-                  key={item}
-                  className={`flex items-center gap-3 rounded-xl border border-border bg-background p-4 text-base font-semibold text-foreground ${index === painPoints.length - 1 ? "sm:col-span-2" : ""}`}
-                >
-                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-gold-soft text-primary">
-                    <EyeIcon />
-                  </span>
-                  <span className="min-w-0">{item}</span>
-                </li>
-              ))}
-            </ul>
-            <p className="mx-auto mt-6 max-w-2xl text-center text-base font-semibold text-primary">
-              O PetVida Sênior ajuda você a organizar os cuidados e observar melhor a rotina do seu pet.
-            </p>
-            <CtaButton variant="petrol" className="mx-auto mt-5 max-w-md">Acessar o guia agora</CtaButton>
-          </div>
-        </section>
-
-        <section className="section-pad bg-background">
-          <div className="wrap">
-            <SectionHeading
-              eyebrow="Clareza para cuidar"
-              title="Você não precisa cuidar no escuro."
-              text="Orientações práticas para uma rotina mais segura, organizada e confortável."
-            />
-            <div className="mt-7 grid grid-cols-2 gap-3 lg:grid-cols-3">
-              {transformations.map(({ title, icon: Icon }) => (
-                <article key={title} className="rounded-xl border border-border bg-card p-4 shadow-[var(--shadow-card)] sm:p-5">
-                  <span className="grid size-10 place-items-center rounded-lg bg-secondary text-primary"><Icon /></span>
-                  <h3 className="mt-3 text-base font-bold text-primary sm:text-lg">{title}</h3>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section-pad bg-card">
-          <div className="wrap">
-            <SectionHeading
-              eyebrow="Pacote completo"
-              title="O que você recebe ao acessar o PetVida Sênior"
-            />
-            <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {products.map((product) => (
-                <article key={product.title} className={`flex flex-col rounded-2xl border bg-background p-4 shadow-[var(--shadow-card)] ${product.featured ? "border-gold md:col-span-2 lg:col-span-1" : "border-border"}`}>
-                  <div className="flex h-48 items-center justify-center overflow-hidden rounded-xl bg-muted p-2">
-                    <img
-                      src={product.image}
-                      alt={product.alt}
-                      width={product.featured ? 900 : 420}
-                      height={product.featured ? 720 : 560}
-                      loading="lazy"
-                      decoding="async"
-                      className="max-h-full w-auto max-w-full object-contain"
-                    />
-                  </div>
-                  <p className="eyebrow mt-4 text-primary">{product.label}</p>
-                  <h3 className="mt-1 text-xl text-primary">{product.title}</h3>
-                  <p className="mt-2 text-base leading-relaxed text-foreground">{product.text}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="relative overflow-hidden bg-primary-dark text-cream">
-          <div className="grid min-h-[520px] lg:grid-cols-2">
-            <img
-              src={tutorPet}
-              alt="Tutora abraçando seu cão idoso com um gato idoso ao lado"
-              width={960}
-              height={720}
-              loading="lazy"
-              decoding="async"
-              className="h-72 w-full object-cover sm:h-96 lg:h-full"
-            />
-            <div className="flex items-center px-5 py-10 sm:px-10 lg:px-16">
-              <div className="max-w-xl">
-                <PawIcon className="size-8 text-gold" />
-                <h2 className="mt-4 text-3xl text-cream sm:text-4xl">
-                  Ele cuidou de você com amor por anos. <span className="text-gold">Agora é a sua vez.</span>
-                </h2>
-                <p className="mt-4 text-base leading-relaxed text-cream">
-                  Na fase sênior, seu pet precisa de mais atenção, paciência e uma rotina adaptada.
-                  Pequenos cuidados podem trazer mais conforto, segurança e qualidade de vida.
-                </p>
-                <CtaButton className="mt-6 max-w-md">Quero o PetVida Sênior</CtaButton>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="oferta" ref={offerRef} className="section-pad bg-background">
-          <div className="wrap max-w-4xl">
-            <div className="overflow-hidden rounded-2xl border border-gold bg-primary-dark shadow-[var(--shadow-soft)]">
-              <div className="bg-gold px-4 py-2 text-center text-sm font-extrabold uppercase text-primary-dark">
-                Oferta de lançamento
-              </div>
-              <div className="grid items-center gap-6 p-5 sm:p-8 md:grid-cols-[0.9fr_1.1fr]">
-                <img
-                  src={mockupMain}
-                  alt="Pacote PetVida Sênior com guia completo e três bônus"
-                  width={900}
-                  height={720}
-                  loading="lazy"
-                  decoding="async"
-                  className="mx-auto w-full max-w-sm"
-                />
-                <div className="text-center md:text-left">
-                  <h2 className="text-3xl text-cream">PetVida Sênior</h2>
-                  <p className="mt-2 text-base text-cream">Guia completo + 3 bônus para cuidar melhor do seu cão ou gato idoso.</p>
-                  <div className="mt-5">
-                    <p className="text-base text-cream line-through">De R$ 69,90</p>
-                    <p className="font-display text-4xl font-bold text-gold sm:text-5xl">R$ 29,90</p>
-                    <p className="text-sm font-bold text-cream">pagamento único</p>
-                  </div>
-                  <ul className="mx-auto mt-5 grid max-w-md gap-2 text-left sm:grid-cols-2 md:mx-0 md:grid-cols-1">
-                    {offerItems.map((item) => (
-                      <li key={item} className="flex items-center gap-2 text-base text-cream">
-                        <CheckCircleIcon className="size-5 shrink-0 text-gold" /> {item}
-                      </li>
-                    ))}
-                  </ul>
-                  <CtaButton className="mt-6">Comprar agora por R$ 29,90</CtaButton>
-                  <p className="mt-3 text-center text-sm text-cream">
-                    Preço promocional de lançamento. O valor pode voltar para R$ 69,90 a qualquer momento.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="section-pad bg-card">
-          <div className="wrap max-w-5xl">
-            <SectionHeading
-              eyebrow="Informação responsável"
-              title="Criado para tutores que querem cuidar com mais segurança"
-              text="O PetVida Sênior não substitui uma consulta veterinária. É um guia educativo para organizar a rotina, observar sinais importantes e conversar com o veterinário mais preparado."
-            />
-            <div className="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {safetyItems.map(({ title, icon: Icon }, index) => (
-                <div key={title} className={`${index === safetyItems.length - 1 ? "col-span-2 sm:col-span-1" : ""} rounded-xl border border-border bg-background p-4 text-center`}>
-                  <span className="mx-auto grid size-10 place-items-center rounded-full bg-secondary text-primary"><Icon /></span>
-                  <p className="mt-2 text-sm font-bold text-primary">{title}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section-pad bg-background">
-          <div className="wrap max-w-4xl">
-            <SectionHeading title="Esse guia é para você se…" />
-            <ul className="mt-7 grid gap-3 sm:grid-cols-2">
-              {audience.map((item, index) => (
-                <li key={item} className={`${index === audience.length - 1 ? "sm:col-span-2" : ""} flex items-start gap-3 rounded-xl border border-border bg-card p-4 text-base font-semibold text-foreground`}>
-                  <CheckCircleIcon className="mt-0.5 size-5 shrink-0 text-primary" />
+              {painPoints.map((item) => (
+                <li key={item} className="flex items-center gap-3 rounded-xl border border-border bg-background p-4 text-base font-semibold text-foreground">
+                  <span className="grid size-9 shrink-0 place-items-center rounded-full bg-gold-soft text-primary"><EyeIcon /></span>
                   <span>{item}</span>
                 </li>
               ))}
             </ul>
+            <CtaButton variant="petrol" className="mx-auto mt-6 max-w-md">Escolher meu plano</CtaButton>
+          </div>
+        </section>
+
+        <section id="oferta" className="section-pad scroll-mt-5 bg-background">
+          <div className="wrap max-w-5xl">
+            <SectionHeading eyebrow="Escolha seu acesso" title="Duas formas simples de começar" text="O Básico entrega o e-book principal. O Premium reúne o guia completo e os três bônus." />
+
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              <PlanCard
+                title="Plano Básico"
+                label="Essencial"
+                description="Para quem quer somente o e-book principal PetVida Sênior."
+                features={["E-book principal PetVida Sênior", "Acesso digital", "Acesso imediato", "Pagamento único"]}
+                buttonLabel="Quero o Básico"
+                href={BASIC_CHECKOUT_URL}
+              />
+
+              <PlanCard
+                title="Plano Premium"
+                label="Mais completo"
+                description="Para quem quer o guia principal junto dos três materiais extras."
+                features={["E-book principal PetVida Sênior", "Checklist Mensal do Pet Idoso", "Guia de Alimentação Sênior", "Rotina de Cuidados e Conforto", "Acesso imediato", "Garantia conforme checkout"]}
+                buttonLabel="Quero o Premium"
+                href={CHECKOUT_URL}
+                featured
+              />
+            </div>
+          </div>
+        </section>
+
+        <section className="bg-card px-5 py-8 sm:py-10">
+          <div className="wrap max-w-3xl text-center">
+            <PawIcon className="mx-auto size-9 text-primary" />
+            <p className="mt-3 font-display text-2xl leading-tight text-primary sm:text-3xl">
+              “Para quem ama um pet, cuidar melhor não é um gasto: é um pequeno investimento no tempo de qualidade que ainda podemos viver juntos.”
+            </p>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">Um material simples pode ajudar a transformar dúvidas do dia a dia em cuidados mais organizados.</p>
+          </div>
+        </section>
+
+        <section className="section-pad bg-background">
+          <div className="wrap max-w-4xl">
+            <SectionHeading eyebrow="Sobre o produto" title="O que você pode esperar do material" text="Uma visão prática e objetiva, sem transformar a decisão de compra em uma página interminável." />
+            <div className="relative mx-auto mt-8 max-w-2xl rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-8">
+              <p className="eyebrow text-primary">{productComments[commentIndex].title}</p>
+              <p className="mt-3 text-lg leading-relaxed text-foreground">“{productComments[commentIndex].text}”</p>
+              <div className="mt-6 flex items-center justify-between gap-4">
+                <button type="button" onClick={previousComment} aria-label="Comentário anterior" className="grid size-10 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary">‹</button>
+                <div className="flex gap-1.5" aria-label={`Comentário ${commentIndex + 1} de ${productComments.length}`}>
+                  {productComments.map((comment, index) => (
+                    <button key={comment.title} type="button" onClick={() => setCommentIndex(index)} aria-label={`Ver comentário ${index + 1}`} className={`size-2.5 rounded-full ${index === commentIndex ? "bg-primary" : "bg-border"}`} />
+                  ))}
+                </div>
+                <button type="button" onClick={nextComment} aria-label="Próximo comentário" className="grid size-10 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary">›</button>
+              </div>
+            </div>
+            <CtaButton className="mx-auto mt-7 max-w-md">Ver os planos</CtaButton>
           </div>
         </section>
 
         <section className="section-pad bg-card">
           <div className="wrap max-w-3xl">
+            <SectionHeading title="O que acompanha o acesso Premium" />
+            <div className="mt-7 grid gap-3 sm:grid-cols-3">
+              <MiniProduct image={mockupMain} title="E-book principal" />
+              <MiniProduct image={bonus1} title="Checklist mensal" />
+              <MiniProduct image={bonus2} title="Guia de alimentação" />
+            </div>
+            <div className="mx-auto mt-3 max-w-sm">
+              <MiniProduct image={bonus3} title="Rotina de cuidados e conforto" />
+            </div>
+          </div>
+        </section>
+
+        <section className="section-pad bg-background">
+          <div className="wrap max-w-3xl">
             <SectionHeading title="Perguntas frequentes" />
             <div className="mt-7 space-y-3">
               {faq.map((item) => (
-                <details key={item.q} className="group rounded-xl border border-border bg-background px-4">
+                <details key={item.q} className="group rounded-xl border border-border bg-card px-4">
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-3 py-4 text-left text-base font-bold text-primary [&::-webkit-details-marker]:hidden">
                     {item.q}
-                    <svg
-                      viewBox="0 0 24 24"
-                      aria-hidden="true"
-                      className="size-4 shrink-0 text-primary transition-transform duration-200 group-open:rotate-180"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      <path d="m6 9 6 6 6-6" />
-                    </svg>
+                    <svg viewBox="0 0 24 24" aria-hidden="true" className="size-4 shrink-0 text-primary transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                   </summary>
                   <div className="pb-4 text-base leading-relaxed text-foreground">{item.a}</div>
                 </details>
@@ -495,17 +265,15 @@ function LandingPage() {
         <section className="section-pad bg-primary-dark text-center">
           <div className="wrap max-w-2xl">
             <ShieldIcon className="mx-auto size-10 text-gold" />
-            <h2 className="mt-4 text-3xl text-cream sm:text-4xl">Seu pet não precisa envelhecer sem cuidado e atenção.</h2>
-            <p className="mt-4 text-base leading-relaxed text-cream">
-              Comece hoje a organizar a rotina, alimentação, higiene, consultas e sinais importantes do seu pet idoso.
-            </p>
-            <CtaButton className="mx-auto mt-6 max-w-md">Comprar agora por R$ 29,90</CtaButton>
+            <h2 className="mt-4 text-3xl text-cream sm:text-4xl">Seu pet merece uma rotina de cuidados mais organizada.</h2>
+            <p className="mt-4 text-base leading-relaxed text-cream">Escolha o acesso que cabe no que você precisa hoje.</p>
+            <CtaButton className="mx-auto mt-6 max-w-md">Escolher meu plano</CtaButton>
             <TrustLine dark />
           </div>
         </section>
       </main>
 
-      <footer className="bg-primary-dark pb-28 pt-8 text-cream md:pb-8">
+      <footer className="bg-primary-dark pb-8 pt-8 text-cream">
         <div className="wrap border-t border-cream/20 pt-7">
           <img src={logo} alt="PetVida Sênior" width={576} height={288} loading="lazy" className="h-9 w-auto brightness-0 invert" />
           <p className="mt-4 max-w-2xl text-sm">Produto digital de caráter educativo. Não substitui consulta, diagnóstico, prescrição ou tratamento veterinário.</p>
@@ -517,35 +285,51 @@ function LandingPage() {
           <p className="mt-5 text-xs">PetVida Sênior — Todos os direitos reservados.</p>
         </div>
       </footer>
+    </div>
+  );
+}
 
-      <div
-        aria-hidden={!showStickyBar}
-        {...(!showStickyBar ? { inert: true } : {})}
+function PlanCard({ title, label, description, features, buttonLabel, href, featured = false }: { title: string; label: string; description: string; features: string[]; buttonLabel: string; href: string; featured?: boolean }) {
+  const handlePremiumClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (href === CHECKOUT_URL) goToCheckout(event);
+  };
 
-        className={`fixed inset-x-0 bottom-0 z-40 border-t border-gold/40 bg-primary-dark/95 px-3 py-3 backdrop-blur transition-[opacity,transform] duration-300 md:hidden ${showStickyBar ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-full opacity-0"}`}
-      >
-        <CtaButton size="md" ariaLabel="Comprar o PetVida Sênior por R$ 29,90">Comprar por R$ 29,90</CtaButton>
+  return (
+    <article className={`relative flex flex-col rounded-2xl border bg-card p-5 shadow-[var(--shadow-card)] sm:p-7 ${featured ? "border-gold ring-2 ring-gold/20" : "border-border"}`}>
+      {featured && <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold px-4 py-1 text-xs font-extrabold uppercase text-primary-dark">Recomendado</div>}
+      <p className="eyebrow text-primary">{label}</p>
+      <h2 className="mt-2 text-2xl text-primary sm:text-3xl">{title}</h2>
+      <p className="mt-3 min-h-12 text-base leading-relaxed text-foreground">{description}</p>
+      <ul className="mt-5 space-y-2.5">
+        {features.map((feature) => <li key={feature} className="flex items-start gap-2 text-sm font-semibold text-foreground"><CheckCircleIcon className="mt-0.5 size-5 shrink-0 text-primary" /><span>{feature}</span></li>)}
+      </ul>
+      <div className="mt-auto pt-6">
+        <a href={href} onClick={handlePremiumClick} rel="noopener" className={`inline-flex min-h-[58px] w-full items-center justify-center rounded-xl px-5 py-4 text-center text-base font-extrabold uppercase transition hover:-translate-y-0.5 hover:brightness-105 ${featured ? "bg-gold text-primary-dark shadow-[var(--shadow-gold)]" : "bg-primary text-primary-foreground shadow-[var(--shadow-soft)]"}`}>
+          {buttonLabel}
+        </a>
+        <p className="mt-3 text-center text-xs text-muted-foreground">Você será levado diretamente ao checkout deste plano.</p>
       </div>
+    </article>
+  );
+}
+
+function MiniProduct({ image, title }: { image: string; title: string }) {
+  return (
+    <div className="rounded-xl border border-border bg-background p-3 text-center">
+      <div className="flex h-36 items-center justify-center overflow-hidden rounded-lg bg-muted p-2">
+        <img src={image} alt={title} width={420} height={560} loading="lazy" decoding="async" className="max-h-full w-auto max-w-full object-contain" />
+      </div>
+      <p className="mt-3 text-sm font-bold text-primary">{title}</p>
     </div>
   );
 }
 
 function SectionHeading({ eyebrow, title, text }: { eyebrow?: string; title: string; text?: string }) {
-  return (
-    <div className="mx-auto max-w-3xl text-center">
-      {eyebrow && <p className="eyebrow text-primary">{eyebrow}</p>}
-      <h2 className={`${eyebrow ? "mt-2" : ""} text-3xl text-primary sm:text-4xl`}>{title}</h2>
-      {text && <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-foreground">{text}</p>}
-    </div>
-  );
+  return <div className="mx-auto max-w-3xl text-center">{eyebrow && <p className="eyebrow text-primary">{eyebrow}</p>}<h2 className={`${eyebrow ? "mt-2" : ""} text-3xl text-primary sm:text-4xl`}>{title}</h2>{text && <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-foreground">{text}</p>}</div>;
 }
 
 function TrustLine({ dark = false }: { dark?: boolean }) {
-  return (
-    <p className={`mt-3 text-center text-sm font-semibold ${dark ? "text-cream" : "text-muted-foreground"}`}>
-      Acesso imediato <span className="text-gold">•</span> Pagamento seguro <span className="text-gold">•</span> Garantia de 7 dias
-    </p>
-  );
+  return <p className={`mt-3 text-center text-sm font-semibold ${dark ? "text-cream" : "text-muted-foreground"}`}>Acesso imediato <span className="text-gold">•</span> Pagamento seguro <span className="text-gold">•</span> Conteúdo digital</p>;
 }
 
 function SvgIcon({ children, className = "size-5" }: { children: ReactNode; className?: string }) {
@@ -553,13 +337,5 @@ function SvgIcon({ children, className = "size-5" }: { children: ReactNode; clas
 }
 function CheckCircleIcon({ className = "size-5" }: { className?: string }) { return <SvgIcon className={className}><circle cx="12" cy="12" r="9" /><path d="m8 12 2.6 2.6L16.5 9" /></SvgIcon>; }
 function PawIcon({ className = "size-5" }: { className?: string }) { return <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}><ellipse cx="6" cy="9" rx="2.1" ry="2.9"/><ellipse cx="10.6" cy="6" rx="2.1" ry="2.9"/><ellipse cx="15.5" cy="6.4" rx="2.1" ry="2.9"/><ellipse cx="19.4" cy="10" rx="2" ry="2.7"/><path d="M12.6 11.4c3.2 0 5.9 2.4 5.9 5.1 0 2.1-1.7 3.5-4 3.5-1 0-1.6-.2-2.2-.4-.5-.2-.9-.2-1.4 0-.6.2-1.2.4-2.2.4-2.3 0-4-1.4-4-3.5 0-2.7 2.7-5.1 5.9-5.1z"/></svg>; }
-function BowlIcon() { return <SvgIcon><path d="M3 11h18a9 9 0 0 1-18 0Z"/><path d="M8 7c0-1.7 1.8-3 4-3s4 1.3 4 3"/></SvgIcon>; }
-function CalendarIcon() { return <SvgIcon><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></SvgIcon>; }
 function EyeIcon() { return <SvgIcon><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.6"/></SvgIcon>; }
-function BathIcon() { return <SvgIcon><path d="M4 13h16v2a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5v-2Z"/><path d="M7 13V6a3 3 0 0 1 6 0"/></SvgIcon>; }
-function MedicineIcon() { return <SvgIcon><path d="m8 8 8 8"/><rect x="4" y="7" width="16" height="10" rx="5" transform="rotate(-45 12 12)"/></SvgIcon>; }
-function ChecklistIcon() { return <SvgIcon><rect x="5" y="3" width="14" height="18" rx="2"/><path d="m8 9 1.5 1.5L12 8M8 15h8"/></SvgIcon>; }
-function BookIcon() { return <SvgIcon><path d="M4 5a3 3 0 0 1 3-2h5v17H7a3 3 0 0 0-3 2V5Z"/><path d="M20 5a3 3 0 0 0-3-2h-5v17h5a3 3 0 0 1 3 2V5Z"/></SvgIcon>; }
-function MessageIcon() { return <SvgIcon><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z"/></SvgIcon>; }
-function LockIcon() { return <SvgIcon><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></SvgIcon>; }
 function ShieldIcon({ className = "size-5" }: { className?: string }) { return <SvgIcon className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></SvgIcon>; }
