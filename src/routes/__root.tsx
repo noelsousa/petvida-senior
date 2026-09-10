@@ -34,7 +34,6 @@ function NotFoundComponent() {
   );
 }
 
-
 function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
@@ -69,31 +68,84 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
           </a>
         </div>
       </div>
-
     </div>
   );
 }
 
 const META_PIXEL_ID = "1544344897732018";
+const TRACKED_PARAMS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid"];
 
-// Código-base do Meta Pixel — instalado UMA única vez, no head do site.
-// A fila (fbq) existe imediatamente, mas o arquivo do Facebook só é baixado
-// após a primeira interação (ou 3,5s), para não atrasar o carregamento.
-// PageView é disparado aqui. ViewContent e InitiateCheckout ficam na página.
-// Purchase NÃO é disparado nesta aplicação (responsabilidade da Kiwify).
+// Meta Pixel: carrega cedo e de forma assíncrona. Assim PageView/ViewContent/InitiateCheckout
+// entram na fila imediatamente, sem esperar interação do usuário ou 3,5s.
+// Purchase permanece na Kiwify, que já está integrada ao Gerenciador de Eventos.
 const metaPixelBaseCode = `
 !function(f,b){if(f.fbq)return;var n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
 if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];
-f.__fbLoad=function(){if(f.__fbLoaded)return;f.__fbLoaded=1;
-var t=b.createElement('script');t.async=!0;
-t.src='https://connect.facebook.net/en_US/fbevents.js';
-b.head.appendChild(t)}}(window,document);
+f.fbq=n;
+var t=b.createElement('script');t.async=!0;t.src='https://connect.facebook.net/en_US/fbevents.js';
+var s=b.getElementsByTagName('script')[0];s.parentNode.insertBefore(t,s);
+}(window,document);
 fbq('init', '${META_PIXEL_ID}');
 fbq('track', 'PageView');
-(function(){var s=function(){window.__fbLoad&&window.__fbLoad()};
-['pointerdown','keydown','touchstart','scroll','mousemove'].forEach(function(e){
-addEventListener(e,s,{once:true,passive:true})});setTimeout(s,3500)})();
+
+(function(){
+  var keys=${JSON.stringify(TRACKED_PARAMS)};
+  var source=new URLSearchParams(window.location.search);
+  try{
+    keys.forEach(function(key){var value=source.get(key);if(value)sessionStorage.setItem('petvida_'+key,value);});
+  }catch(e){}
+
+  function trackedUrl(rawUrl){
+    var target=new URL(rawUrl,window.location.href);
+    if(target.hostname!=='pay.kiwify.com.br')return target.toString();
+    keys.forEach(function(key){
+      if(target.searchParams.has(key))return;
+      var value=source.get(key);
+      try{if(!value)value=sessionStorage.getItem('petvida_'+key);}catch(e){}
+      if(value)target.searchParams.set(key,value);
+    });
+    return target.toString();
+  }
+
+  function checkoutData(url){
+    if(url.indexOf('cbbtkJu')!==-1)return {name:'PetVida Sênior - Plano Básico',id:'petvida-senior-basico',value:10};
+    if(url.indexOf('qu6aO4q')!==-1)return {name:'PetVida Sênior - Plano Premium',id:'petvida-senior-premium',value:29.9};
+    return {name:'PetVida Sênior',id:'petvida-senior',value:29.9};
+  }
+
+  // Captura TODOS os cliques que levam à Kiwify, inclusive o Plano Básico,
+  // que antes ia direto para o checkout sem InitiateCheckout.
+  document.addEventListener('click',function(event){
+    var target=event.target;
+    if(!(target instanceof Element))return;
+    var link=target.closest('a[href]');
+    if(!link)return;
+    var raw=link.getAttribute('href');
+    if(!raw)return;
+    var destination=new URL(raw,window.location.href);
+    if(destination.hostname!=='pay.kiwify.com.br')return;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    var finalUrl=trackedUrl(destination.toString());
+    var data=checkoutData(finalUrl);
+    try{
+      fbq('track','InitiateCheckout',{
+        content_name:data.name,
+        content_ids:[data.id],
+        content_type:'product',
+        num_items:1,
+        value:data.value,
+        currency:'BRL'
+      });
+    }catch(e){}
+
+    // Pequena janela para o Pixel enviar/enfileirar o evento antes da navegação.
+    window.setTimeout(function(){window.location.assign(finalUrl);},180);
+  },true);
+})();
 `;
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
@@ -114,6 +166,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "theme-color", content: "#073833" },
     ],
     links: [
+      { rel: "preconnect", href: "https://connect.facebook.net" },
+      { rel: "preconnect", href: "https://www.facebook.com" },
+      { rel: "preconnect", href: "https://pay.kiwify.com.br" },
       {
         rel: "stylesheet",
         href: appCss,
@@ -134,7 +189,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.png", type: "image/png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
-      { rel: "dns-prefetch", href: "https://pay.kiwify.com.br" },
     ],
     scripts: [{ children: metaPixelBaseCode }],
   }),
@@ -164,7 +218,6 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
   );
