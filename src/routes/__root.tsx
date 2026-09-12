@@ -75,9 +75,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 const META_PIXEL_ID = "1544344897732018";
 const TRACKED_PARAMS = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term", "fbclid"];
 
-// Meta Pixel: carrega cedo e de forma assíncrona. Assim PageView/ViewContent/InitiateCheckout
-// entram na fila imediatamente, sem esperar interação do usuário ou 3,5s.
-// Purchase permanece na Kiwify, que já está integrada ao Gerenciador de Eventos.
+// Meta Pixel: carrega cedo e de forma assíncrona. PageView e ViewContent entram na fila
+// sem depender de interação. Purchase permanece sob responsabilidade da Kiwify.
+// InitiateCheckout também permanece sob responsabilidade da Kiwify para evitar duplicidade.
 const metaPixelBaseCode = `
 !function(f,b){if(f.fbq)return;var n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -108,14 +108,8 @@ fbq('track', 'PageView');
     return target.toString();
   }
 
-  function checkoutData(url){
-    if(url.indexOf('cbbtkJu')!==-1)return {name:'PetVida Sênior - Plano Básico',id:'petvida-senior-basico',value:10};
-    if(url.indexOf('qu6aO4q')!==-1)return {name:'PetVida Sênior - Plano Premium',id:'petvida-senior-premium',value:29.9};
-    return {name:'PetVida Sênior',id:'petvida-senior',value:29.9};
-  }
-
-  // Captura TODOS os cliques que levam à Kiwify, inclusive o Plano Básico,
-  // que antes ia direto para o checkout sem InitiateCheckout.
+  // Intercepta somente links para a Kiwify para preservar UTMs/fbclid em qualquer CTA.
+  // O checkout da Kiwify registra InitiateCheckout ao ser visitado e Purchase quando aprovado.
   document.addEventListener('click',function(event){
     var target=event.target;
     if(!(target instanceof Element))return;
@@ -130,20 +124,7 @@ fbq('track', 'PageView');
     event.stopPropagation();
 
     var finalUrl=trackedUrl(destination.toString());
-    var data=checkoutData(finalUrl);
-    try{
-      fbq('track','InitiateCheckout',{
-        content_name:data.name,
-        content_ids:[data.id],
-        content_type:'product',
-        num_items:1,
-        value:data.value,
-        currency:'BRL'
-      });
-    }catch(e){}
-
-    // Pequena janela para o Pixel enviar/enfileirar o evento antes da navegação.
-    window.setTimeout(function(){window.location.assign(finalUrl);},180);
+    window.location.assign(finalUrl);
   },true);
 })();
 `;
