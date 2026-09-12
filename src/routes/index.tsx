@@ -99,6 +99,14 @@ const productComments = [
   },
 ];
 
+const testimonials = [
+  { name: "Joyce Santos", text: "Estou gostando do produto." },
+  { name: "Sandra", text: "Gostei do PetVida Sênior. Me ajudou a entender melhor a situação do meu cão." },
+  { name: "Thiago", text: "Gostei muito do PetVida Sênior. Me ajudou a entender melhor como cuidar do meu cão idoso." },
+  { name: "Rafael Andreoli", text: "Pra falar a verdade, gostei bastante do material. Ele explica de um jeito simples e me ajudou a entender melhor o que meu cachorro idoso está passando." },
+  { name: "Marcely", text: "Oi, vi sim e gostei bastante. Achei o conteúdo bem fácil de entender. Me deixou mais calma e me ajudou a perceber melhor a situação da minha cachorrinha idosa." },
+];
+
 function LandingPage() {
   const [commentIndex, setCommentIndex] = useState(0);
 
@@ -213,12 +221,19 @@ function LandingPage() {
           </div>
         </section>
 
+        <section className="section-pad bg-background" aria-label="Depoimentos de tutores">
+          <div className="wrap max-w-4xl">
+            <SectionHeading eyebrow="Quem já leu" title="O que os tutores estão dizendo" />
+            <TestimonialCarousel />
+          </div>
+        </section>
+
         <section className="section-pad bg-background">
           <div className="wrap max-w-4xl">
             <SectionHeading eyebrow="Sobre o produto" title="O que você pode esperar do material" text="Uma visão prática e objetiva, sem transformar a decisão de compra em uma página interminável." />
             <div className="relative mx-auto mt-8 max-w-2xl rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-8">
-              <p className="eyebrow text-primary">{productComments[commentIndex].title}</p>
-              <p className="mt-3 text-lg leading-relaxed text-foreground">“{productComments[commentIndex].text}”</p>
+              <p className="eyebrow text-primary">{productComments[commentIndex]!.title}</p>
+              <p className="mt-3 text-lg leading-relaxed text-foreground">“{productComments[commentIndex]!.text}”</p>
               <div className="mt-6 flex items-center justify-between gap-4">
                 <button type="button" onClick={previousComment} aria-label="Comentário anterior" className="grid size-10 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary">‹</button>
                 <div className="flex gap-1.5" aria-label={`Comentário ${commentIndex + 1} de ${productComments.length}`}>
@@ -327,6 +342,30 @@ function MiniProduct({ image, title }: { image: string; title: string }) {
   );
 }
 
+function TestimonialCarousel() {
+  const [index, setIndex] = useState(0);
+  const current = testimonials[index]!;
+  const next = () => setIndex((i) => (i + 1) % testimonials.length);
+  const previous = () => setIndex((i) => (i - 1 + testimonials.length) % testimonials.length);
+
+  return (
+    <div className="relative mx-auto mt-8 max-w-2xl rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-8">
+      <QuoteIcon className="mx-auto size-8 text-gold" />
+      <p className="mt-4 text-center text-lg leading-relaxed text-foreground sm:text-xl">“{current.text}”</p>
+      <p className="mt-4 text-center text-sm font-bold text-primary">— {current.name}</p>
+      <div className="mt-6 flex items-center justify-between gap-4">
+        <button type="button" onClick={previous} aria-label="Depoimento anterior" className="grid size-10 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary">‹</button>
+        <div className="flex gap-1.5" aria-label={`Depoimento ${index + 1} de ${testimonials.length}`}>
+          {testimonials.map((_, i) => (
+            <button key={i} type="button" onClick={() => setIndex(i)} aria-label={`Ver depoimento ${i + 1}`} className={`size-2.5 rounded-full ${i === index ? "bg-primary" : "bg-border"}`} />
+          ))}
+        </div>
+        <button type="button" onClick={next} aria-label="Próximo depoimento" className="grid size-10 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary">›</button>
+      </div>
+    </div>
+  );
+}
+
 function SectionHeading({ eyebrow, title, text }: { eyebrow?: string; title: string; text?: string }) {
   return <div className="mx-auto max-w-3xl text-center">{eyebrow && <p className="eyebrow text-primary">{eyebrow}</p>}<h2 className={`${eyebrow ? "mt-2" : ""} text-3xl text-primary sm:text-4xl`}>{title}</h2>{text && <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-foreground">{text}</p>}</div>;
 }
@@ -342,3 +381,4 @@ function CheckCircleIcon({ className = "size-5" }: { className?: string }) { ret
 function PawIcon({ className = "size-5" }: { className?: string }) { return <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}><ellipse cx="6" cy="9" rx="2.1" ry="2.9"/><ellipse cx="10.6" cy="6" rx="2.1" ry="2.9"/><ellipse cx="15.5" cy="6.4" rx="2.1" ry="2.9"/><ellipse cx="19.4" cy="10" rx="2" ry="2.7"/><path d="M12.6 11.4c3.2 0 5.9 2.4 5.9 5.1 0 2.1-1.7 3.5-4 3.5-1 0-1.6-.2-2.2-.4-.5-.2-.9-.2-1.4 0-.6.2-1.2.4-2.2.4-2.3 0-4-1.4-4-3.5 0-2.7 2.7-5.1 5.9-5.1z"/></svg>; }
 function EyeIcon() { return <SvgIcon><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6Z"/><circle cx="12" cy="12" r="2.6"/></SvgIcon>; }
 function ShieldIcon({ className = "size-5" }: { className?: string }) { return <SvgIcon className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></SvgIcon>; }
+function QuoteIcon({ className = "size-5" }: { className?: string }) { return <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}><path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.002 1.203-4.514 2.925-4.807 5.082.866-.204 1.74-.21 2.697.027 1.67.436 2.82 1.704 2.82 3.41 0 1.306-.687 2.448-1.73 3.148-1.05.704-2.42.922-3.82.62-1.38-.297-2.49-1.13-3.02-2.267Zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.002 1.203-4.514 2.925-4.807 5.082.866-.204 1.74-.21 2.697.027 1.67.436 2.82 1.704 2.82 3.41 0 1.306-.687 2.448-1.73 3.148-1.05.704-2.42.922-3.82.62-1.38-.297-2.49-1.13-3.02-2.267Z"/></svg>; }
