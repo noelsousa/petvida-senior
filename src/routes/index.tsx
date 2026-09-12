@@ -99,6 +99,14 @@ const productComments = [
   },
 ];
 
+const testimonials = [
+  { name: "Joyce Santos", text: "Estou gostando do produto." },
+  { name: "Sandra", text: "Gostei do PetVida Sênior. Me ajudou a entender melhor a situação do meu cão." },
+  { name: "Thiago", text: "Gostei muito do PetVida Sênior. Me ajudou a entender melhor como cuidar do meu cão idoso." },
+  { name: "Rafael Andreoli", text: "Pra falar a verdade, gostei bastante do material. Ele explica de um jeito simples e me ajudou a entender melhor o que meu cachorro idoso está passando." },
+  { name: "Marcely", text: "Oi, vi sim e gostei bastante. Achei o conteúdo bem fácil de entender. Me deixou mais calma e me ajudou a perceber melhor a situação da minha cachorrinha idosa." },
+];
+
 function LandingPage() {
   const [commentIndex, setCommentIndex] = useState(0);
 
