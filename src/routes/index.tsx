@@ -221,6 +221,13 @@ function LandingPage() {
           </div>
         </section>
 
+        <section className="section-pad bg-background" aria-label="Depoimentos de tutores">
+          <div className="wrap max-w-4xl">
+            <SectionHeading eyebrow="Quem já leu" title="O que os tutores estão dizendo" />
+            <TestimonialCarousel />
+          </div>
+        </section>
+
         <section className="section-pad bg-background">
           <div className="wrap max-w-4xl">
             <SectionHeading eyebrow="Sobre o produto" title="O que você pode esperar do material" text="Uma visão prática e objetiva, sem transformar a decisão de compra em uma página interminável." />
