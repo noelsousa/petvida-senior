@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { CtaButton } from "@/components/CtaButton";
-import { CHECKOUT_URL, trackViewContent } from "@/lib/checkout";
+import { CHECKOUT_URL, goToCheckout, trackViewContent } from "@/lib/checkout";
 import logo from "@/assets/logo-288.webp";
 import heroPets from "@/assets/hero-pets.webp";
 import mockupMain from "@/assets/mockup-main.webp";
@@ -152,11 +152,7 @@ function LandingPage() {
 
         <section className="section-pad bg-card">
           <div className="wrap max-w-4xl">
-            <SectionHeading
-              eyebrow="Talvez você já tenha percebido"
-              title="Seu pet mudou. A pergunta é: você sabe o que observar agora?"
-              text="O envelhecimento acontece aos poucos. E justamente por isso é fácil se acostumar com mudanças que merecem mais atenção na rotina."
-            />
+            <SectionHeading eyebrow="Talvez você já tenha percebido" title="Seu pet mudou. A pergunta é: você sabe o que observar agora?" text="O envelhecimento acontece aos poucos. E justamente por isso é fácil se acostumar com mudanças que merecem mais atenção na rotina." />
             <ul className="mt-8 grid gap-3 sm:grid-cols-2">
               {painPoints.map((item) => (
                 <li key={item} className="flex items-start gap-3 rounded-xl border border-border bg-background p-4 text-base font-semibold leading-snug text-foreground shadow-sm">
@@ -175,11 +171,7 @@ function LandingPage() {
 
         <section className="section-pad bg-background">
           <div className="wrap max-w-4xl">
-            <SectionHeading
-              eyebrow="Não espere ter todas as respostas"
-              title="Seu pet não está ficando mais jovem. E você pode começar a se preparar agora."
-              text="Você não precisa diagnosticar nada sozinho. Precisa apenas ter informação organizada para observar melhor, cuidar melhor e saber quando uma situação merece a avaliação de um veterinário."
-            />
+            <SectionHeading eyebrow="Não espere ter todas as respostas" title="Seu pet não está ficando mais jovem. E você pode começar a se preparar agora." text="Você não precisa diagnosticar nada sozinho. Precisa apenas ter informação organizada para observar melhor, cuidar melhor e saber quando uma situação merece a avaliação de um veterinário." />
             <div className="mt-8 grid gap-4 md:grid-cols-3">
               <InfoCard icon={<PawIcon />} title="Mais clareza" text="Entenda melhor as mudanças comuns da fase sênior e organize suas dúvidas." />
               <InfoCard icon={<CheckCircleIcon />} title="Mais organização" text="Tenha referências para alimentação, higiene, rotina, conforto e acompanhamento." />
@@ -190,12 +182,7 @@ function LandingPage() {
 
         <section id="oferta" className="section-pad scroll-mt-5 bg-primary-dark text-cream">
           <div className="wrap max-w-5xl">
-            <SectionHeading
-              eyebrow="A solução"
-              title="Um material simples para ajudar você a cuidar melhor dessa fase"
-              text="Em vez de procurar informações espalhadas, tenha um conteúdo organizado para consultar quando precisar."
-              light
-            />
+            <SectionHeading eyebrow="A solução" title="Um material simples para ajudar você a cuidar melhor dessa fase" text="Em vez de procurar informações espalhadas, tenha um conteúdo organizado para consultar quando precisar." light />
 
             <div className="mt-8 rounded-3xl border border-gold/40 bg-card p-5 text-foreground shadow-[var(--shadow-soft)] sm:p-8 lg:p-10">
               <div className="grid items-center gap-8 lg:grid-cols-[0.78fr_1.22fr]">
@@ -219,7 +206,7 @@ function LandingPage() {
                 <p className="text-sm font-extrabold uppercase tracking-widest text-gold">Acesso completo</p>
                 <p className="mt-2 text-4xl font-black tracking-tight sm:text-5xl">R$ 29,90</p>
                 <p className="mt-2 text-sm text-cream/85">Pagamento único • Acesso digital imediato</p>
-                <a href={CHECKOUT_URL} className="mt-5 inline-flex min-h-[60px] w-full max-w-lg items-center justify-center rounded-xl bg-gold px-6 py-4 text-center text-base font-extrabold uppercase leading-tight text-primary-dark shadow-[var(--shadow-gold)] transition hover:-translate-y-0.5 hover:brightness-105">Quero o PetVida Sênior Completo</a>
+                <a href={CHECKOUT_URL} onClick={goToCheckout} className="mt-5 inline-flex min-h-[60px] w-full max-w-lg items-center justify-center rounded-xl bg-gold px-6 py-4 text-center text-base font-extrabold uppercase leading-tight text-primary-dark shadow-[var(--shadow-gold)] transition hover:-translate-y-0.5 hover:brightness-105">Quero o PetVida Sênior Completo</a>
                 <p className="mt-3 text-xs text-cream/75">Você será levado diretamente ao checkout seguro.</p>
               </div>
             </div>
