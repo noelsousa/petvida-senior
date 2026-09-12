@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 import { CtaButton } from "@/components/CtaButton";
-import { CHECKOUT_URL, goToCheckout, trackViewContent } from "@/lib/checkout";
+import { BASIC_CHECKOUT_URL, CHECKOUT_URL, goToBasicCheckout, goToCheckout, trackViewContent } from "@/lib/checkout";
 import logo from "@/assets/logo-288.webp";
 import heroPets from "@/assets/hero-pets.webp";
 import mockupMain from "@/assets/mockup-main.webp";
@@ -16,7 +16,6 @@ import thiagoConversation from "@/assets/testimonials/thiago.webp.asset.json";
 
 const SITE_URL = "https://petvida-senior.lovable.app";
 const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
-const BASIC_CHECKOUT_URL = "https://pay.kiwify.com.br/cbbtkJu";
 const TITLE = "PetVida Sênior — Cuidados para Cães e Gatos Idosos";
 const DESCRIPTION = "Um guia prático para ajudar tutores a entender melhor e organizar os cuidados de cães e gatos idosos.";
 
@@ -213,7 +212,7 @@ function LandingPage() {
 
             <div className="mx-auto mt-6 max-w-2xl text-center text-sm text-cream/85">
               <p>Prefere começar somente pelo guia principal?</p>
-              <a href={BASIC_CHECKOUT_URL} className="mt-1 inline-block font-extrabold text-gold underline underline-offset-4">PetVida Sênior Essencial — R$ 10,00</a>
+              <a href={BASIC_CHECKOUT_URL} onClick={goToBasicCheckout} className="mt-1 inline-block font-extrabold text-gold underline underline-offset-4">PetVida Sênior Essencial — R$ 10,00</a>
             </div>
           </div>
         </section>
