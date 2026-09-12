@@ -60,7 +60,7 @@ export const Route = createFileRoute("/")({
         }),
       },
     ],
-  ),
+  }),
 });
 
 const heroBenefits = [
