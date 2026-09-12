@@ -225,8 +225,8 @@ function LandingPage() {
           <div className="wrap max-w-4xl">
             <SectionHeading eyebrow="Sobre o produto" title="O que você pode esperar do material" text="Uma visão prática e objetiva, sem transformar a decisão de compra em uma página interminável." />
             <div className="relative mx-auto mt-8 max-w-2xl rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-8">
-              <p className="eyebrow text-primary">{productComments[commentIndex].title}</p>
-              <p className="mt-3 text-lg leading-relaxed text-foreground">“{productComments[commentIndex].text}”</p>
+              <p className="eyebrow text-primary">{productComments[commentIndex]!.title}</p>
+              <p className="mt-3 text-lg leading-relaxed text-foreground">“{productComments[commentIndex]!.text}”</p>
               <div className="mt-6 flex items-center justify-between gap-4">
                 <button type="button" onClick={previousComment} aria-label="Comentário anterior" className="grid size-10 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary">‹</button>
                 <div className="flex gap-1.5" aria-label={`Comentário ${commentIndex + 1} de ${productComments.length}`}>
