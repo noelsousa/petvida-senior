@@ -47,7 +47,7 @@ export function trackViewContent(): void {
 
 let redirecting = false;
 
-/** Único handler para CTAs do Premium: registra InitiateCheckout e sai rapidamente para o checkout. */
+/** Redireciona rapidamente para o Premium preservando os parâmetros de campanha. */
 export function goToCheckout(event?: { preventDefault: () => void }): void {
   event?.preventDefault();
   if (redirecting) return;
@@ -55,22 +55,7 @@ export function goToCheckout(event?: { preventDefault: () => void }): void {
 
   const url = buildCheckoutUrl();
 
-  try {
-    getFbq()?.("track", "InitiateCheckout", {
-      content_name: "PetVida Senior - Guia Completo",
-      content_ids: ["petvida-senior"],
-      content_type: "product",
-      num_items: 1,
-      value: PRICE,
-      currency: "BRL",
-    });
-  } catch {
-    // pixel bloqueado: o botão continua funcionando
-  }
-
-  // Não segura o usuário por centenas de ms esperando o pixel.
-  // O navegador recebe tempo suficiente para enfileirar o evento e redireciona.
-  window.setTimeout(() => {
-    window.location.replace(url);
-  }, 60);
+  // A Kiwify dispara InitiateCheckout ao visitar o checkout e Purchase quando a compra é aprovada.
+  // Mantemos esses eventos sob responsabilidade da Kiwify para evitar duplicidade de IC.
+  window.location.replace(url);
 }
