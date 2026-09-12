@@ -149,6 +149,24 @@ function LandingPage() {
           </div>
         </section>
 
+        <section className="section-pad bg-background" aria-label="Depoimentos reais de tutores">
+          <div className="wrap max-w-5xl">
+            <SectionHeading eyebrow="Feedback real" title="Quem já conheceu o PetVida Sênior está gostando" text="Depoimentos reais de tutores que tiveram contato com o material." />
+            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {testimonials.map((testimonial) => (
+                <article key={testimonial.name} className="overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-[var(--shadow-card)] sm:p-4">
+                  <div className="flex min-h-[330px] max-h-[460px] items-center justify-center overflow-hidden rounded-xl bg-muted p-2 sm:min-h-[360px]">
+                    <img src={testimonial.image} alt={`Depoimento real de ${testimonial.name} sobre o PetVida Sênior`} width={720} height={1280} loading="lazy" decoding="async" className="max-h-[440px] w-auto max-w-full object-contain" />
+                  </div>
+                  <p className="mt-3 text-center text-sm font-extrabold text-primary">{testimonial.name}</p>
+                  <p className="pb-1 text-center text-xs text-muted-foreground">Feedback real</p>
+                </article>
+              ))}
+            </div>
+            <CtaButton variant="petrol" className="mx-auto mt-8 max-w-md">Quero o PetVida Sênior Completo</CtaButton>
+          </div>
+        </section>
+
         <section className="section-pad bg-card">
           <div className="wrap max-w-4xl">
             <SectionHeading eyebrow="Talvez você já tenha percebido" title="Seu pet mudou. A pergunta é: você sabe o que observar agora?" text="O envelhecimento acontece aos poucos. E justamente por isso é fácil se acostumar com mudanças que merecem mais atenção na rotina." />
@@ -227,24 +245,6 @@ function LandingPage() {
               <MiniProduct image={bonus3} title="Rotina de cuidados" />
             </div>
             <CtaButton className="mx-auto mt-8 max-w-md">Quero receber o pacote completo</CtaButton>
-          </div>
-        </section>
-
-        <section className="section-pad bg-background" aria-label="Depoimentos reais de tutores">
-          <div className="wrap max-w-5xl">
-            <SectionHeading eyebrow="Feedback real" title="Quem já conheceu o PetVida Sênior está gostando" text="Depoimentos reais de tutores que tiveram contato com o material." />
-            <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {testimonials.map((testimonial) => (
-                <article key={testimonial.name} className="overflow-hidden rounded-2xl border border-border bg-card p-3 shadow-[var(--shadow-card)] sm:p-4">
-                  <div className="flex min-h-[330px] max-h-[460px] items-center justify-center overflow-hidden rounded-xl bg-muted p-2 sm:min-h-[360px]">
-                    <img src={testimonial.image} alt={`Depoimento real de ${testimonial.name} sobre o PetVida Sênior`} width={720} height={1280} loading="lazy" decoding="async" className="max-h-[440px] w-auto max-w-full object-contain" />
-                  </div>
-                  <p className="mt-3 text-center text-sm font-extrabold text-primary">{testimonial.name}</p>
-                  <p className="pb-1 text-center text-xs text-muted-foreground">Feedback real</p>
-                </article>
-              ))}
-            </div>
-            <CtaButton variant="petrol" className="mx-auto mt-8 max-w-md">Quero o PetVida Sênior Completo</CtaButton>
           </div>
         </section>
 
