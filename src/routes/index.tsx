@@ -342,6 +342,30 @@ function MiniProduct({ image, title }: { image: string; title: string }) {
   );
 }
 
+function TestimonialCarousel() {
+  const [index, setIndex] = useState(0);
+  const current = testimonials[index]!;
+  const next = () => setIndex((i) => (i + 1) % testimonials.length);
+  const previous = () => setIndex((i) => (i - 1 + testimonials.length) % testimonials.length);
+
+  return (
+    <div className="relative mx-auto mt-8 max-w-2xl rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] sm:p-8">
+      <QuoteIcon className="mx-auto size-8 text-gold" />
+      <p className="mt-4 text-center text-lg leading-relaxed text-foreground sm:text-xl">“{current.text}”</p>
+      <p className="mt-4 text-center text-sm font-bold text-primary">— {current.name}</p>
+      <div className="mt-6 flex items-center justify-between gap-4">
+        <button type="button" onClick={previous} aria-label="Depoimento anterior" className="grid size-10 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary">‹</button>
+        <div className="flex gap-1.5" aria-label={`Depoimento ${index + 1} de ${testimonials.length}`}>
+          {testimonials.map((_, i) => (
+            <button key={i} type="button" onClick={() => setIndex(i)} aria-label={`Ver depoimento ${i + 1}`} className={`size-2.5 rounded-full ${i === index ? "bg-primary" : "bg-border"}`} />
+          ))}
+        </div>
+        <button type="button" onClick={next} aria-label="Próximo depoimento" className="grid size-10 place-items-center rounded-full border border-border text-primary transition hover:bg-secondary">›</button>
+      </div>
+    </div>
+  );
+}
+
 function SectionHeading({ eyebrow, title, text }: { eyebrow?: string; title: string; text?: string }) {
   return <div className="mx-auto max-w-3xl text-center">{eyebrow && <p className="eyebrow text-primary">{eyebrow}</p>}<h2 className={`${eyebrow ? "mt-2" : ""} text-3xl text-primary sm:text-4xl`}>{title}</h2>{text && <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-foreground">{text}</p>}</div>;
 }
